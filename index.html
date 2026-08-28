@@ -1404,6 +1404,9 @@
                     <button class="btn btn-secondary" id="limpiarBtn">
                         🗑️ Limpiar Lista
                     </button>
+                    <button class="btn btn-secondary" onclick="abrirTestBaston()" style="border-color:#fbbf24;color:#fbbf24;">
+                        🔬 Test Bastón
+                    </button>
                 </div>
                 <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 20px;">
                     💡 <strong>Tip bastón:</strong> Activá el <em>Modo Bastón RFID</em> para que el sistema mantenga foco, bloquee el teclado Android y encienda la pantalla mientras escaneás caravanas.
@@ -1422,6 +1425,69 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL TEST BASTÓN ===== -->
+    <div id="testModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:5000;overflow-y:auto;padding:16px;">
+        <div style="max-width:520px;margin:0 auto;background:#0f2621;border:2px solid #fbbf24;border-radius:18px;padding:24px;">
+
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                <h2 style="color:#fbbf24;font-size:1.3rem;">🔬 Test Bastón RFID</h2>
+                <button onclick="cerrarTestBaston()" style="background:#1e4742;border:none;color:#80cbc4;font-size:1.4rem;width:36px;height:36px;border-radius:8px;cursor:pointer;">✕</button>
+            </div>
+
+            <!-- Zona escaneo -->
+            <div id="testZona" style="background:#051210;border:3px dashed #14b8a6;border-radius:14px;padding:20px;text-align:center;margin-bottom:14px;transition:all 0.3s;">
+                <p style="color:#80cbc4;font-size:0.85rem;margin-bottom:10px;">📡 Campo de captura</p>
+                <input type="text" id="testCampo"
+                    autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                    placeholder="Esperando escaneo..."
+                    style="width:100%;padding:16px;font-size:1.2rem;background:#0a1f1c;border:2px solid #1e4742;border-radius:10px;color:#14b8a6;font-family:'JetBrains Mono',monospace;font-weight:bold;text-align:center;letter-spacing:2px;">
+                <div id="testFocoEl" style="margin-top:10px;font-size:0.82rem;padding:5px 12px;border-radius:20px;display:inline-block;background:#450a0a;color:#fca5a5;">⚠️ Sin foco — tocá el botón</div>
+            </div>
+
+            <button onclick="testDarFoco()" style="width:100%;padding:16px;font-size:1rem;font-weight:bold;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;border:none;border-radius:12px;cursor:pointer;margin-bottom:10px;">
+                👆 TOCAR AQUÍ ANTES DE ESCANEAR
+            </button>
+
+            <!-- Resultados -->
+            <div style="background:#051210;border:1px solid #1e4742;border-radius:12px;padding:14px;margin-bottom:12px;">
+                <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #1e4742;font-size:0.9rem;">
+                    <span style="color:#80cbc4;">Lecturas recibidas</span>
+                    <span id="tLecturas" style="font-family:'JetBrains Mono',monospace;color:#fbbf24;font-weight:bold;">0</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #1e4742;font-size:0.9rem;">
+                    <span style="color:#80cbc4;">Último código</span>
+                    <span id="tUltimo" style="font-family:'JetBrains Mono',monospace;color:#4b6868;font-weight:bold;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #1e4742;font-size:0.9rem;">
+                    <span style="color:#80cbc4;">Longitud</span>
+                    <span id="tLong" style="font-family:'JetBrains Mono',monospace;color:#4b6868;font-weight:bold;">—</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #1e4742;font-size:0.9rem;">
+                    <span style="color:#80cbc4;">Enter detectado</span>
+                    <span id="tEnter" style="font-family:'JetBrains Mono',monospace;color:#ef4444;font-weight:bold;">NO</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:7px 0;font-size:0.9rem;">
+                    <span style="color:#80cbc4;">Modo</span>
+                    <span id="tModo" style="font-family:'JetBrains Mono',monospace;color:#4b6868;font-weight:bold;">esperando...</span>
+                </div>
+            </div>
+
+            <!-- Log -->
+            <div id="testLog" style="background:#030d0c;border:1px solid #1e4742;border-radius:10px;padding:10px;max-height:160px;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:0.78rem;margin-bottom:12px;">
+                <span style="color:#fbbf24;">Sistema listo. Tocá el botón y escaneá.</span>
+            </div>
+
+            <!-- Diagnóstico -->
+            <div id="testDiag" style="background:#1c1200;border:1px solid #92400e;border-radius:10px;padding:12px;font-size:0.85rem;color:#fcd34d;line-height:1.6;margin-bottom:14px;">
+                <strong>Estado:</strong> Esperando primera lectura...
+            </div>
+
+            <button onclick="testLimpiar()" style="width:100%;padding:12px;font-size:0.9rem;background:#1e4742;color:#80cbc4;border:none;border-radius:10px;cursor:pointer;">
+                🗑️ Limpiar
+            </button>
         </div>
     </div>
 
@@ -2701,6 +2767,138 @@
 
         // Cuando se recibe un escaneo exitoso, mostrar feedback en la barra BT
         // (el chequeo de bastonActivo está dentro de abrirModal directamente)
+
+        // ===== TEST BASTÓN =====
+        var tLecturas = 0, tTeclas = 0, tEnterVisto = false, tTimer = null;
+        var testCampo  = document.getElementById('testCampo');
+        var testFocoEl = document.getElementById('testFocoEl');
+
+        window.abrirTestBaston = function() {
+            document.getElementById('testModal').style.display = 'block';
+            setTimeout(function() { testCampo.focus(); }, 300);
+        };
+
+        window.cerrarTestBaston = function() {
+            document.getElementById('testModal').style.display = 'none';
+            window.testLimpiar();
+        };
+
+        window.testDarFoco = function() {
+            testCampo.removeAttribute('readonly');
+            testCampo.focus();
+        };
+
+        testCampo.addEventListener('focus', function() {
+            testFocoEl.style.background = '#14532d';
+            testFocoEl.style.color = '#86efac';
+            testFocoEl.textContent = '✅ Foco activo — podés escanear';
+        });
+
+        testCampo.addEventListener('blur', function() {
+            testFocoEl.style.background = '#450a0a';
+            testFocoEl.style.color = '#fca5a5';
+            testFocoEl.textContent = '⚠️ Sin foco — tocá el botón';
+        });
+
+        testCampo.addEventListener('keydown', function(e) {
+            tTeclas++;
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                tEnterVisto = true;
+                document.getElementById('tEnter').textContent = 'SÍ ✅';
+                document.getElementById('tEnter').style.color = '#22c55e';
+                document.getElementById('tModo').textContent = 'HID teclado ✅';
+                document.getElementById('tModo').style.color = '#22c55e';
+                tAgregarLog('↵ ENTER recibido', '#22c55e');
+            } else {
+                tAgregarLog('Tecla: "' + e.key + '"', '#14b8a6');
+            }
+        });
+
+        testCampo.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                var codigo = testCampo.value.trim();
+                if (codigo.length > 0) tProcesar(codigo);
+            }
+        });
+
+        testCampo.addEventListener('input', function() {
+            clearTimeout(tTimer);
+            var val = testCampo.value;
+            if (val.indexOf('\n') !== -1 || val.indexOf('\r') !== -1) {
+                tProcesar(val.replace(/[\r\n]/g, '')); return;
+            }
+            tTimer = setTimeout(function() {
+                if (testCampo.value.trim().length > 2) {
+                    tAgregarLog('⏱ Auto-procesado (sin Enter)', '#fbbf24');
+                    document.getElementById('tModo').textContent = 'Sin Enter — auto-detect';
+                    document.getElementById('tModo').style.color = '#fbbf24';
+                    tProcesar(testCampo.value.trim());
+                }
+            }, 350);
+        });
+
+        testCampo.addEventListener('paste', function() {
+            tAgregarLog('📋 Paste detectado', '#fbbf24');
+            setTimeout(function() {
+                if (testCampo.value.trim().length > 0) tProcesar(testCampo.value.trim());
+            }, 60);
+        });
+
+        function tProcesar(codigo) {
+            if (!codigo) return;
+            tLecturas++;
+            testCampo.value = '';
+            document.getElementById('tLecturas').textContent = tLecturas;
+            document.getElementById('tUltimo').textContent   = codigo;
+            document.getElementById('tUltimo').style.color   = '#22c55e';
+            document.getElementById('tLong').textContent     = codigo.length + ' chars';
+            document.getElementById('tLong').style.color     = '#22c55e';
+            tAgregarLog('✅ CÓDIGO: ' + codigo + ' (' + codigo.length + ' chars)', '#22c55e');
+            tActualizarDiag(codigo);
+            var zona = document.getElementById('testZona');
+            zona.style.borderColor = '#22c55e';
+            zona.style.background  = '#052e16';
+            setTimeout(function() {
+                zona.style.borderColor = '#14b8a6';
+                zona.style.background  = '#051210';
+            }, 500);
+            setTimeout(function() { testCampo.focus(); }, 100);
+        }
+
+        function tActualizarDiag(codigo) {
+            var d = document.getElementById('testDiag');
+            var html = '✅ <strong>¡El bastón SÍ está enviando datos!</strong><br><br>';
+            html += '📦 Código: <strong>' + codigo + '</strong><br>';
+            html += '📏 Longitud: <strong>' + codigo.length + ' caracteres</strong><br>';
+            html += tEnterVisto
+                ? '<br>✅ Manda Enter → <strong>compatible con Bioscan.</strong>'
+                : '<br>⚠️ No detecté Enter al final. Avisale al desarrollador.';
+            d.innerHTML = html;
+        }
+
+        function tAgregarLog(texto, color) {
+            var log = document.getElementById('testLog');
+            var d = new Date();
+            var ts = d.getHours() + ':' + (d.getMinutes()<10?'0':'') + d.getMinutes() + ':' + (d.getSeconds()<10?'0':'') + d.getSeconds();
+            log.innerHTML += '<div style="padding:2px 0;border-bottom:1px solid #0f2621;"><span style="color:#4b6868;">' + ts + ' </span><span style="color:' + (color||'#14b8a6') + ';">' + texto + '</span></div>';
+            log.scrollTop = log.scrollHeight;
+        }
+
+        window.testLimpiar = function() {
+            tLecturas = 0; tTeclas = 0; tEnterVisto = false;
+            document.getElementById('tLecturas').textContent = '0';
+            document.getElementById('tUltimo').textContent   = '—';
+            document.getElementById('tUltimo').style.color   = '#4b6868';
+            document.getElementById('tLong').textContent     = '—';
+            document.getElementById('tLong').style.color     = '#4b6868';
+            document.getElementById('tEnter').textContent    = 'NO';
+            document.getElementById('tEnter').style.color    = '#ef4444';
+            document.getElementById('tModo').textContent     = 'esperando...';
+            document.getElementById('tModo').style.color     = '#4b6868';
+            document.getElementById('testLog').innerHTML     = '<span style="color:#fbbf24;">Log limpiado.</span>';
+            document.getElementById('testDiag').innerHTML   = '<strong>Estado:</strong> Esperando primera lectura...';
+            testCampo.value = '';
+        };
 
     </script>
     
